@@ -1,9 +1,14 @@
 package game.entities;
 
-import game.graphics.Camera;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
+import game.graphics.Camera;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 /* Abstract class: is a restricted class that cannot be used to create objects 
 (to access it, it must be inherited from another class). */
 public abstract class Entity {
@@ -26,7 +31,4 @@ public abstract class Entity {
     public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);
     }
-
-    public int getX() { return x; }
-    public int getY() { return y; }
 }

@@ -57,7 +57,7 @@ public class Projectile extends Entity {
     public void render(Graphics g) {
         if (!active) return;
         g.setColor(Color.ORANGE);
-        // TODO: g.fillOval(x, y, width, height);
+        g.fillOval(x - camera.getX(),  - camera.getY(), width, height);
     }
 
     // Override Class Rectangle
