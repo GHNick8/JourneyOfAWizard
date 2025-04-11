@@ -1,4 +1,88 @@
+// Reviewed & improved version
 package game.entities;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+
+import game.graphics.Camera;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class Projectile extends Entity {
+
+    public enum Direction {
+        UP, RIGHT, DOWN, LEFT
+    }
+
+    private int speed = 10;
+    private Direction direction;
+    private int damage = 2;
+    private int range = 300;
+    private int distanceTraveled = 0;
+    private boolean active = true;
+
+    public Projectile(int x, int y, int width, int height, Camera camera, Direction direction) {
+        super(x, y, width, height, camera);
+        this.direction = direction;
+    }
+
+    @Override
+    public void update() {
+        if (!active) return;
+
+        int dx = 0, dy = 0;
+        switch (direction) {
+            case UP -> dy = -speed;
+            case RIGHT -> dx = speed;
+            case DOWN -> dy = speed;
+            case LEFT -> dx = -speed;
+        }
+
+        x += dx;
+        y += dy;
+        distanceTraveled += Math.abs(dx) + Math.abs(dy);
+
+        if (distanceTraveled >= range) {
+            deactivate();
+        }
+
+        // Future collision/offscreen logic
+        // if (collidesWithEnemy() || isOffScreen()) {
+        //     deactivate();
+        // }
+    }
+
+    @Override
+    public void render(Graphics g) {
+        if (!active) return;
+        g.setColor(Color.ORANGE);
+        g.fillOval(x - camera.getX(), y - camera.getY(), width, height);
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, width, height);
+    }
+
+    public void deactivate() {
+        active = false;
+    }
+
+    // Optional: reset for reuse
+    public void reset(int x, int y, Direction direction) {
+        this.x = x;
+        this.y = y;
+        this.direction = direction;
+        this.distanceTraveled = 0;
+        this.active = true;
+    }
+}
+
+
+/*package game.entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -74,3 +158,4 @@ public class Projectile extends Entity {
         active = false;
     }
 }
+*/
