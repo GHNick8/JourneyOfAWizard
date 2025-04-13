@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
+import object.SuperObject;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -24,14 +25,21 @@ public class GamePanel extends JPanel implements Runnable {
     TileManager tileManager = new TileManager(this);
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
+    // Public classes for global accessibility
     public CollisionDetector cd = new CollisionDetector(this);
+    public AssetSetter assetSetter = new AssetSetter(this);
     public Player player = new Player(this, keyHandler);
+    public SuperObject obj[] = new SuperObject[20]; // Add objects 
+    // Constructor GamePanel 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
+    }
+    public void setupGame() {
+        assetSetter.setObject();
     }
     public void startGameThread() {
         gameThread = new Thread(this);
@@ -101,6 +109,11 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
         tileManager.draw(g2);
+        for (SuperObject obj1 : obj) {
+            if (obj1 != null) {
+                obj1.draw(g2, this);
+            }
+        }
         player.draw(g2);
         g2.dispose();
     }

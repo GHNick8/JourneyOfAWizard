@@ -13,6 +13,7 @@ public final class Player extends Entity {
     KeyHandler keyHandler;
     public final int screenX;
     public final int screenY;
+    int hasKey = 0;
     public Player (GamePanel gamePanel, KeyHandler keyHandler) {
         this.gamePanel = gamePanel;
         this.keyHandler = keyHandler;
@@ -21,6 +22,8 @@ public final class Player extends Entity {
         solidArea = new Rectangle();
         solidArea.x = 8;
         solidArea.y = 16;
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
         solidArea.width = 32;
         solidArea.height = 32;
         setDefaultValues();
@@ -28,7 +31,7 @@ public final class Player extends Entity {
     }
     public void setDefaultValues() {
         worldX = gamePanel.tileSize * 23;
-        worldY = gamePanel.tileSize * 21;
+        worldY = gamePanel.tileSize * 23;
         speed = 4;
         direction = "down";
     }
@@ -63,6 +66,8 @@ public final class Player extends Entity {
             }
             collisionOn = false;
             gamePanel.cd.checkTile(this);
+            int objIndex = gamePanel.cd.checkObject(this, true);
+            pickUpObject(objIndex);
             if (collisionOn == false) {
                 switch (direction) {
                     case "up" -> worldY -= speed;
@@ -80,6 +85,36 @@ public final class Player extends Entity {
                     spriteNum = 1;
                 }
                 spriteCounter = 0;
+            }
+        }
+    }
+    public void pickUpObject(int i) {
+        if (i != 999) {
+            /* 
+            Debug & Testing 
+            Simply deletes the object touched by player
+            gamePanel.obj[i] = null;
+            */
+            String objectName = gamePanel.obj[i].name;
+            switch (objectName) {
+                case "Key" -> {
+                    hasKey++;
+                    gamePanel.obj[i] = null;
+                    /* 
+                    Debug & Testing
+                    System.out.println("Key:"+hasKey);
+                    */
+                }
+                case "Door" -> {
+                    if (hasKey > 0) {
+                        gamePanel.obj[i] = null;
+                        hasKey--;
+                    }
+                    /* 
+                    Debug & Testing
+                    System.out.println("Key:"+hasKey);
+                    */
+                }
             }
         }
     }
