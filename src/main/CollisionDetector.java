@@ -8,8 +8,7 @@ public class CollisionDetector {
     public CollisionDetector(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
-    public void checkTile(Entity entity) {
-        // Complicated structure 
+    public void checkTile(Entity entity) { 
         int entityLeftWorldX = entity.worldX + entity.solidArea.x;
         int entityRightWorldX = entity.worldX + entity.solidArea.x + entity.solidArea.width;
         int entityTopWorldY = entity.worldY + entity.solidArea.y;
