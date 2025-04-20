@@ -7,13 +7,14 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import main.GamePanel;
 import main.KeyHandler;
+import main.UtilityTool;
 
 public final class Player extends Entity {
     GamePanel gamePanel;
     KeyHandler keyHandler;
     public final int screenX;
     public final int screenY;
-    public int hasKey = 0;
+    // public int hasKey = 0;
     public Player (GamePanel gamePanel, KeyHandler keyHandler) {
         this.gamePanel = gamePanel;
         this.keyHandler = keyHandler;
@@ -36,19 +37,29 @@ public final class Player extends Entity {
         direction = "down";
     }
     public void getPlayerImage() {
+        up1 = setup("walking_up_1");
+        up2 = setup("walking_up_2");
+        down1 = setup("walking_down_1");
+        down2 = setup("walking_down_2");
+        left1 = setup("walking_left_1");
+        left2 = setup("walking_left_2");
+        right1 = setup("walking_right_1");
+        right2 = setup("walking_right_2");
+    }
+
+    public BufferedImage setup(String imagePath) {
+        UtilityTool utilityTool = new UtilityTool();
+        BufferedImage image = null;
+
         try {
-            up1 = ImageIO.read(getClass().getResourceAsStream("/resources/player/walking/walking_up_1.png"));
-            up2 = ImageIO.read(getClass().getResourceAsStream("/resources/player/walking/walking_up_2.png"));
-            down1 = ImageIO.read(getClass().getResourceAsStream("/resources/player/walking/walking_down_1.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream("/resources/player/walking/walking_down_2.png"));
-            left1 = ImageIO.read(getClass().getResourceAsStream("/resources/player/walking/walking_left_1.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/resources/player/walking/walking_left_2.png"));
-            right1 = ImageIO.read(getClass().getResourceAsStream("/resources/player/walking/walking_right_1.png"));
-            right2 = ImageIO.read(getClass().getResourceAsStream("/resources/player/walking/walking_right_2.png"));
+            image = ImageIO.read(getClass().getResourceAsStream("/resources/player/walking/" + imagePath + ".png"));
+            image = utilityTool.scaleImage(image, gamePanel.tileSize, gamePanel.tileSize);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return image;
     }
+
     public void update() {
         if (keyHandler.upPressed == true || keyHandler.downPressed == true || 
                 keyHandler.leftPressed == true || keyHandler.rightPressed == true) {
@@ -91,10 +102,13 @@ public final class Player extends Entity {
     public void pickUpObject(int i) {
         if (i != 999) {
             /* 
+
+            Previous used code 
+
             Debug & Testing 
             Simply deletes the object touched by player
             gamePanel.obj[i] = null;
-            */
+            
             String objectName = gamePanel.obj[i].name;
             switch (objectName) {
                 case "Key" -> {
@@ -102,10 +116,10 @@ public final class Player extends Entity {
                     hasKey++;
                     gamePanel.obj[i] = null;
                     gamePanel.ui.showMessage("Collected key!");
-                    /* 
+                    
                     Debug & Testing
                     System.out.println("Key:"+hasKey);
-                    */
+                    
                 }
                 case "Door" -> {
                     if (hasKey > 0) {
@@ -117,10 +131,10 @@ public final class Player extends Entity {
                     else {
                         gamePanel.ui.showMessage("Door locked! Collect key!");
                     }
-                    /* 
+                    
                     Debug & Testing
                     System.out.println("Key:"+hasKey);
-                    */
+                    
                 }
                 // (Key) item to increase players speed
                 case "Boots" -> {
@@ -129,6 +143,10 @@ public final class Player extends Entity {
                     gamePanel.obj[i] = null;
                 }
             }
+            */
+
+            // New code 
+            
         }
     }
     public void draw(Graphics2D g2) {
@@ -174,7 +192,7 @@ public final class Player extends Entity {
             case "right" -> image = right1;
             */
         }
-        g2.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
+        g2.drawImage(image, screenX, screenY, null);
         /* 
         Debug & Testing
         Rectangle sprite 

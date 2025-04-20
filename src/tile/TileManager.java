@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
 import main.GamePanel;
+import main.UtilityTool;
 
 public final class TileManager {
     GamePanel gamePanel;
@@ -14,33 +15,75 @@ public final class TileManager {
     public int mapTileNum[][];
     public TileManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
-        tile = new Tile[10]; // Add tiles
+        tile = new Tile[70]; // Add tiles
         mapTileNum = new int[gamePanel.maxWorldCol][gamePanel.maxWorldRow];
         getTileImage();
         loadMap("/resources/maps/world01.txt");
     }
-    public void getTileImage() {
+    public void getTileImage() { 
+        // Placeholders to prevent null pointer exception 
+        setup(0, "simple_design/grass", false);
+        setup(1, "simple_design/grass", false);
+        setup(2, "simple_design/grass", false);
+        setup(3, "simple_design/grass", false);
+        setup(4, "simple_design/grass", false);
+        setup(5, "simple_design/grass", false);
+        setup(6, "simple_design/grass", false);
+        setup(7, "simple_design/grass", false);
+        setup(8, "simple_design/grass", false);
+        setup(9, "simple_design/grass", false);
+        // Tiles used in game starts here 
+        setup(10, "improved_design/grass00", false);
+        setup(11, "improved_design/grass01", false);
+        setup(12, "improved_design/earth", false);
+        setup(13, "improved_design/floor01", false);
+        setup(14, "improved_design/hut", false);
+        setup(15, "improved_design/road00", false);
+        setup(16, "improved_design/road01", false);
+        setup(17, "improved_design/road02", false);
+        setup(18, "improved_design/road03", false);
+        setup(19, "improved_design/road04", false);
+        setup(20, "improved_design/road05", false);
+        setup(21, "improved_design/road06", false);
+        setup(22, "improved_design/road07", false);
+        setup(23, "improved_design/road08", false);
+        setup(24, "improved_design/road09", false);
+        setup(25, "improved_design/road10", false);
+        setup(26, "improved_design/road11", false);
+        setup(27, "improved_design/road12", false);
+        setup(28, "improved_design/table01", true);
+        setup(29, "improved_design/tree", true);
+        setup(30, "improved_design/wall", true);
+        setup(31, "improved_design/water00", true);
+        setup(32, "improved_design/water01", true);
+        setup(33, "improved_design/water02", true);
+        setup(34, "improved_design/water03", true);
+        setup(35, "improved_design/water04", true);
+        setup(36, "improved_design/water05", true);
+        setup(37, "improved_design/water06", true);
+        setup(38, "improved_design/water07", true);
+        setup(39, "improved_design/water08", true);
+        setup(40, "improved_design/water09", true);
+        setup(41, "improved_design/water10", true);
+        setup(42, "improved_design/water11", true);
+        setup(43, "improved_design/water12", true);
+        setup(44, "improved_design/water13", true);
+    }
+
+    public void setup(int index, String imagePath, boolean collision) {
+        UtilityTool utilityTool = new UtilityTool();
+
         try {
-            tile[0] = new Tile();
-            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/resources/tiles/simple_design/grass.png"));
-            tile[1] = new Tile();
-            tile[1].image = ImageIO.read(getClass().getResourceAsStream("/resources/tiles/simple_design/earth.png"));
-            tile[2] = new Tile();
-            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/resources/tiles/simple_design/sand.png"));
-            tile[3] = new Tile();
-            tile[3].image = ImageIO.read(getClass().getResourceAsStream("/resources/tiles/simple_design/tree.png"));
-            tile[3].collision = true;
-            tile[4] = new Tile();
-            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/resources/tiles/simple_design/wall.png"));
-            tile[4].collision = true;
-            tile[5] = new Tile();
-            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/resources/tiles/simple_design/water.png"));
-            tile[5].collision = true;
+            tile[index] = new Tile();
+            tile[index].image = ImageIO.read(getClass().getResourceAsStream("/resources/tiles/" + imagePath + ".png"));
+            tile[index].image = utilityTool.scaleImage(tile[index].image, gamePanel.tileSize, gamePanel.tileSize);
+            tile[index].collision = collision;
+
         } catch (IOException e) {
-            System.out.println("Image png not working!");
             e.printStackTrace();
         }
-    }
+    }    
+
     public void loadMap(String filePath) {
         try {
             InputStream mapping = getClass().getResourceAsStream(filePath);
@@ -65,6 +108,7 @@ public final class TileManager {
             e.printStackTrace();
         }
     }
+
     public void draw(Graphics2D g2) {
         int worldCol = 0;
         int worldRow = 0;
@@ -79,7 +123,8 @@ public final class TileManager {
                 worldX - gamePanel.tileSize < gamePanel.player.worldX + gamePanel.player.screenX && 
                 worldY + gamePanel.tileSize > gamePanel.player.worldY - gamePanel.player.screenY && 
                 worldY - gamePanel.tileSize < gamePanel.player.worldY + gamePanel.player.screenY) {
-                g2.drawImage(tile[tileNum].image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
+
+                    g2.drawImage(tile[tileNum].image, screenX, screenY, null);
             }
             worldCol++;
             if (worldCol == gamePanel.maxWorldCol) {

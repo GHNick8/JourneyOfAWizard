@@ -10,8 +10,10 @@ import object.SuperObject;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
+    // Declaration instance variables 
     final int element = 16;
     final int scale = 3;
+    
     public final int tileSize = element * scale;
     public final int maxScreenCol = 16;
     public final int maxScreenRow = 12;
@@ -19,19 +21,30 @@ public class GamePanel extends JPanel implements Runnable {
     public final int screenHeight = tileSize * maxScreenRow;
     public final int maxWorldCol = 50;
     public final int maxWorldRow = 50;
+
     int FPS = 60;
+
+    // Pass this GamePanel  
     TileManager tileManager = new TileManager(this);
-    KeyHandler keyHandler = new KeyHandler();
+    KeyHandler keyHandler = new KeyHandler(this);
     Sound music = new Sound();
     Sound se = new Sound();
-    // Public classes for global accessibility
+    
     public CollisionDetector cd = new CollisionDetector(this);
     public AssetSetter assetSetter = new AssetSetter(this);
     public UI ui = new UI(this);
+
     Thread gameThread;
+
     // Entity & Object
     public Player player = new Player(this, keyHandler);
     public SuperObject obj[] = new SuperObject[20]; // Add objects 
+
+    // Game state 
+    public int gameState;
+    public final int playState = 1;
+    public final int pauseState = 2;
+
     // Constructor GamePanel 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -43,11 +56,14 @@ public class GamePanel extends JPanel implements Runnable {
     public void setupGame() {
         assetSetter.setObject();
         playMusic(0);
+        stopMusic();
+        gameState = playState;
     }
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
     }
+
     /*
     // Method with 2 warnings 
     @Override
@@ -75,6 +91,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
     } 
     */
+
     // Clean method 
     @Override
     public void run() {
@@ -95,6 +112,7 @@ public class GamePanel extends JPanel implements Runnable {
                 delta--;
                 // drawCount++;
             }
+
             /* Debug & Testing 
             if (timer >= 1000000000) {
                 System.out.println("FPS:" + drawCount); // FPS:60 
@@ -105,20 +123,49 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
     public void update() {
-        player.update();
+        if (gameState == playState) {
+            player.update();
+        }
+        if (gameState == pauseState) {
+            // TODO 
+        }
     }
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
+
+        // Debug 
+        long drawStart = 0;
+        if (keyHandler.checkDrawTime == true) {
+            drawStart = System.nanoTime();
+        }
+
+        // Draw Tiles
         tileManager.draw(g2);
+
+        // Draw Objects
         for (SuperObject obj1 : obj) {
             if (obj1 != null) {
                 obj1.draw(g2, this);
             }
         }
+
+        // Draw player 
         player.draw(g2);
+
+        // Draw UI 
         ui.draw(g2);
+
+        // Debug 
+        if (keyHandler.checkDrawTime == true) {
+            long drawEnd = System.nanoTime();
+            long passed = drawEnd - drawStart;
+            g2.setColor(Color.white);
+            g2.drawString("Draw Time: " + passed, 10, 400);
+            System.out.println("Draw Time: " + passed);
+        }
+
         g2.dispose();
     }
     public void playMusic(int i) {
