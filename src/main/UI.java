@@ -1,25 +1,40 @@
 package main;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class UI {
     GamePanel gamePanel;
     Graphics2D g2;
-    Font arial_40;
+
+    Font maruMonica;
+    // Font arial_40;
     // BufferedImage keyImage;
     public boolean messageOn = false;
     public String message = "";
     // int messageCounter = 0;
     public String currentDialogue = "";
+    public int commandNum = 0;
     // Timer: time played 
     // double playTime;
     // DecimalFormat dF = new DecimalFormat("#0.00");
     public UI(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
-        arial_40 = new Font("Arial", Font.PLAIN, 40);
+        
+        try {
+            InputStream inputStream = getClass().getResourceAsStream("/resources/font/x12y16pxMaruMonica.ttf");
+            maruMonica = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+        }
+
+        //arial_40 = new Font("Arial", Font.PLAIN, 40);
+        // arial_40 = new Font("Cambria", Font.PLAIN, 40);
         // OBJ_Key key = new OBJ_Key(gamePanel);
         // keyImage = key.image;
     }
@@ -54,9 +69,14 @@ public class UI {
 
         // New code 
         this.g2 = g2;
-
-        g2.setFont(arial_40);
+        g2.setFont(maruMonica);
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.setColor(Color.white);
+
+        // Title State
+        if (gamePanel.gameState == gamePanel.titleState) {
+            drawTitleScreen();
+        }
 
         // Play State 
         if (gamePanel.gameState == gamePanel.playState) {
@@ -72,6 +92,52 @@ public class UI {
         }
     }
 
+    public void drawTitleScreen() {
+
+        // Title color 
+        g2.setColor(new Color(204, 153, 0)); // RGB Color Picker 
+        g2.fillRect(0, 0, gamePanel.screenWidth, gamePanel.screenHeight);
+
+        // Title name 
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 95f));
+        String text = "Journey Of A Wizard";
+
+        int x = getXforCenteredText(text);
+        int y = gamePanel.tileSize*3;
+
+        // Shadow
+        g2.setColor(Color.black);
+        g2.drawString(text, x+5, y+5);
+
+        // Main Color 
+        g2.setColor(Color.white);
+        g2.drawString(text, x, y);
+
+        // Title image 
+        x = gamePanel.screenWidth/2 - (gamePanel.tileSize*2)/2;
+        y += gamePanel.tileSize*2;
+        g2.drawImage(gamePanel.player.down1, x, y, gamePanel.tileSize*2, gamePanel.tileSize*2, null);
+
+        // Menu
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 48f));
+        
+        text = "NEW GAME";
+        x = getXforCenteredText(text);
+        y += gamePanel.tileSize*3.5;
+        g2.drawString(text, x, y);
+        if (commandNum == 0) {
+            g2.drawString(">", x-gamePanel.tileSize, y);
+        }
+
+        text = "LOAD GAME";
+        x = getXforCenteredText(text);
+        y += gamePanel.tileSize;
+        g2.drawString(text, x, y);
+        if (commandNum == 1) {
+            g2.drawString(">", x-gamePanel.tileSize, y);
+        }
+    }
+
     public void drawPauseScreen() {
         // Change size font 
         g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 80f));
@@ -82,6 +148,7 @@ public class UI {
     }
 
     public void drawDialogueScreen() {
+        /* 
         // Window dialogue 
         int x = gamePanel.tileSize*2;
         int y = gamePanel.tileSize/2;
@@ -99,9 +166,11 @@ public class UI {
             g2.drawString(line, x, y);
             y += 40;
         }
+        */
     }
 
     public void drawSubWindow(int x, int y, int width, int height) {
+        /* 
         Color c = new Color(0, 0, 0, 210);
         g2.setColor(c);
         g2.fillRoundRect(x, y, width, height, 35, 35);
@@ -110,6 +179,7 @@ public class UI {
         g2.setColor(c);
         g2.setStroke(new BasicStroke(5));
         g2.drawRoundRect(x+5, y+5, width-10, height-10, 25, 25);
+        */
     }
 
     public int getXforCenteredText(String text) {

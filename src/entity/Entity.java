@@ -9,18 +9,24 @@ import main.GamePanel;
 import main.UtilityTool;
 
 public class Entity {
+
     GamePanel gamePanel;
 
     public int worldX, worldY;
     public int speed;
+
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public String direction;
+
     public int spriteCounter = 0;
     public int spriteNum = 1;
+
     public Rectangle solidArea = new Rectangle(0, 0, 40, 40);
     public int solidAreaDefaultX, solidAreaDefaultY;
+
     public boolean collisionOn = false;
     public int actionLockCounter = 0;
+    
     String dialogueText[] = new String[100]; // Add dialogue 
     int dialogueIndex = 0;
 

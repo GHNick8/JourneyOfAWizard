@@ -8,9 +8,10 @@ import main.KeyHandler;
 
 public final class Player extends Entity {
     KeyHandler keyHandler;
+
     public final int screenX;
     public final int screenY;
-    // public int hasKey = 0;
+
     public Player (GamePanel gamePanel, KeyHandler keyHandler) {
         super(gamePanel);
         this.keyHandler = keyHandler;
@@ -135,10 +136,7 @@ public final class Player extends Entity {
                     gamePanel.obj[i] = null;
                 }
             }
-            */
-
-            // New code 
-            
+            */            
         }
     }
 
