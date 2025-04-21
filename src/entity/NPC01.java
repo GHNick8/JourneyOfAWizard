@@ -12,6 +12,7 @@ public final class NPC01 extends Entity {
         speed = 2;
 
         getImage();
+        setDialogue();
     }
 
     public void getImage() {
@@ -23,6 +24,13 @@ public final class NPC01 extends Entity {
         left2 = setup("/resources/npc/npc01/oldman_left_2");
         right1 = setup("/resources/npc/npc01/oldman_right_1");
         right2 = setup("/resources/npc/npc01/oldman_right_2");
+    }
+
+    public void setDialogue() {
+        dialogueText[0] = "Good evening.";
+        dialogueText[1] = "I know why you've come to visit me.";
+        dialogueText[2] = "And i assure you i won't sell.";
+        dialogueText[3] = "Memories dear to the beholder \nare worth much more \nthan the greatest treause.";
     }
 
     @Override
@@ -49,5 +57,10 @@ public final class NPC01 extends Entity {
 
             actionLockCounter = 0;
         }
+    }
+
+    @Override
+    public void speak() {
+        super.speak();
     }
 }
