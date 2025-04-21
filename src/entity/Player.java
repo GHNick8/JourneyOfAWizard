@@ -3,23 +3,21 @@ package entity;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import main.GamePanel;
 import main.KeyHandler;
-import main.UtilityTool;
 
 public final class Player extends Entity {
-    GamePanel gamePanel;
     KeyHandler keyHandler;
     public final int screenX;
     public final int screenY;
     // public int hasKey = 0;
     public Player (GamePanel gamePanel, KeyHandler keyHandler) {
-        this.gamePanel = gamePanel;
+        super(gamePanel);
         this.keyHandler = keyHandler;
+
         screenX = gamePanel.screenWidth/2 - (gamePanel.tileSize/2);
         screenY = gamePanel.screenHeight/2 - (gamePanel.tileSize/2);
+
         solidArea = new Rectangle();
         solidArea.x = 8;
         solidArea.y = 16;
@@ -27,6 +25,7 @@ public final class Player extends Entity {
         solidAreaDefaultY = solidArea.y;
         solidArea.width = 32;
         solidArea.height = 32;
+
         setDefaultValues();
         getPlayerImage();
     }
@@ -37,29 +36,17 @@ public final class Player extends Entity {
         direction = "down";
     }
     public void getPlayerImage() {
-        up1 = setup("walking_up_1");
-        up2 = setup("walking_up_2");
-        down1 = setup("walking_down_1");
-        down2 = setup("walking_down_2");
-        left1 = setup("walking_left_1");
-        left2 = setup("walking_left_2");
-        right1 = setup("walking_right_1");
-        right2 = setup("walking_right_2");
+        up1 = setup("/resources/player/walking/walking_up_1");
+        up2 = setup("/resources/player/walking/walking_up_2");
+        down1 = setup("/resources/player/walking/walking_down_1");
+        down2 = setup("/resources/player/walking/walking_down_2");
+        left1 = setup("/resources/player/walking/walking_left_1");
+        left2 = setup("/resources/player/walking/walking_left_2");
+        right1 = setup("/resources/player/walking/walking_right_1");
+        right2 = setup("/resources/player/walking/walking_right_2");
     }
 
-    public BufferedImage setup(String imagePath) {
-        UtilityTool utilityTool = new UtilityTool();
-        BufferedImage image = null;
-
-        try {
-            image = ImageIO.read(getClass().getResourceAsStream("/resources/player/walking/" + imagePath + ".png"));
-            image = utilityTool.scaleImage(image, gamePanel.tileSize, gamePanel.tileSize);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return image;
-    }
-
+    @Override
     public void update() {
         if (keyHandler.upPressed == true || keyHandler.downPressed == true || 
                 keyHandler.leftPressed == true || keyHandler.rightPressed == true) {
@@ -79,6 +66,11 @@ public final class Player extends Entity {
             gamePanel.cd.checkTile(this);
             int objIndex = gamePanel.cd.checkObject(this, true);
             pickUpObject(objIndex);
+
+            // Check NPC collision 
+            int npcIndex = gamePanel.cd.checkEntity(this, gamePanel.npc);
+            interactNPC(npcIndex);
+
             if (collisionOn == false) {
                 switch (direction) {
                     case "up" -> worldY -= speed;
@@ -149,6 +141,14 @@ public final class Player extends Entity {
             
         }
     }
+
+    public void interactNPC(int i) {
+        if (i != 999) {
+            // System.out.println("You are colliding with an npc!");
+        }
+    }
+
+    @Override
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
         switch(direction) {

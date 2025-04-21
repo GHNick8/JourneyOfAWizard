@@ -1,5 +1,6 @@
 package main;
 
+import entity.Entity;
 import entity.Player;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -32,13 +33,14 @@ public class GamePanel extends JPanel implements Runnable {
     
     public CollisionDetector cd = new CollisionDetector(this);
     public AssetSetter assetSetter = new AssetSetter(this);
-    public UI ui = new UI(this);
+    public UI uiux = new UI(this);
 
     Thread gameThread;
 
     // Entity & Object
     public Player player = new Player(this, keyHandler);
     public SuperObject obj[] = new SuperObject[20]; // Add objects 
+    public Entity npc[] = new Entity[10]; // Add npc's 
 
     // Game state 
     public int gameState;
@@ -55,8 +57,9 @@ public class GamePanel extends JPanel implements Runnable {
     }
     public void setupGame() {
         assetSetter.setObject();
+        assetSetter.setNPC();
         playMusic(0);
-        stopMusic();
+        // stopMusic();
         gameState = playState;
     }
     public void startGameThread() {
@@ -124,7 +127,14 @@ public class GamePanel extends JPanel implements Runnable {
     }
     public void update() {
         if (gameState == playState) {
+            // Player state
             player.update();
+            // NPC state
+            for (Entity npc1 : npc) {
+                if (npc1 != null) {
+                    npc1.update();
+                }
+            }
         }
         if (gameState == pauseState) {
             // TODO 
@@ -151,11 +161,18 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
+        // Draw NPC
+        for (Entity npc1 : npc) {
+            if (npc1 != null) {
+                npc1.draw(g2);
+            }
+        }
+
         // Draw player 
         player.draw(g2);
 
         // Draw UI 
-        ui.draw(g2);
+        uiux.draw(g2);
 
         // Debug 
         if (keyHandler.checkDrawTime == true) {
